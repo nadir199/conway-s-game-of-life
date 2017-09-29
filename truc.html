@@ -1,0 +1,125 @@
+<html>
+  <head>
+    <title>Conway's Game Of Life</title>
+    <script src="jquery-3.1.1.js"></script>
+    <script src="https://d3js.org/d3.v4.min.js"></script>
+  </head>
+  <body>
+    <script>var tab=[];</script>
+    <button onclick="nextStep(tab);">NEXT</button>
+    <script>
+      //$("#canevas").append("<h1>gello</h1>");
+
+      var blockSize=15;
+      var dist=1;
+      var canevas=$("#canevas");
+      var bodySelect=d3.select('body');
+
+      var svgSelect=bodySelect.append('svg')
+                              .attr('width',1000)
+                              .attr('height',1000);
+
+      for(var i=0;i<50;i++)
+      {
+        tab.push([]);
+        for(var j=0;j<50;j++)
+        {
+          var sqSelect= svgSelect.append('rect')
+                                 .attr('width',blockSize)
+                                 .attr('height',blockSize)
+                                 .attr('x',(blockSize+dist)*i)
+                                 .attr('y',(blockSize+dist)*j)
+                                 .attr('fill','lightgray');
+          sqSelect.on("click",function(){
+            i2=$(this).attr("x")/(blockSize+dist);
+            j2=$(this).attr("y")/(blockSize+dist);
+
+            if($(this).attr("fill")==="lightgray")
+            {
+              $(this).attr("fill","blue");
+              tab[i2][j2]=false;
+
+            }
+            else if($(this).attr("fill")==="blue")
+            {
+              $(this).attr("fill","lightgray");
+              tab[i2][j2]=true;
+            }
+
+          });
+        }
+
+      }
+
+      function nextStep(tab)
+      {
+        var rects=$("rect").each(function(){
+          var i=$(this).attr("x")/(blockSize+dist);
+          var j=$(this).attr("y")/(blockSize+dist);
+
+          var nbViv=0;
+          var nbMor=0;
+          for(var i2=i-1;i2<i+2;i2++)
+          {
+            for(var j2=j-1;j2<j+2;j2++)
+            {
+              if(i2==i && j2==j)
+                continue;
+              if(i2<0 || i2>49)
+                continue;
+              if(j2<0 || j2>49)
+                continue;
+              if(tab[i2][j2])
+                nbViv++;
+              else
+                nbMor++;
+
+            }
+          }
+          if(tab[i][j])
+          {
+            if(nbViv<=1)
+            {
+              $(this).attr("fill","lightgray");
+            }
+            else if(nbViv>=4)
+            {
+              $(this).attr("fill","lightgray");
+            }
+            else if(nbViv==2 || nbViv==3)
+            {
+              $(this).attr("fill","blue");
+            }
+          }
+          else {
+            if(nbViv==3)
+              $(this).attr("fill","blue");
+          }
+
+        });
+        updateTable(tab);
+      }
+
+      function updateTable(tab)
+      {
+        var rects=$("rect").each(function(){
+          i=$(this).attr("x")/(blockSize+dist);
+          j=$(this).attr("y")/(blockSize+dist);
+
+          if($(this).attr("fill")==="lightgray")
+          {
+            tab[i][j]=false;
+          }
+          else if($(this).attr("fill")==="blue")
+          {
+            tab[i][j]=true;
+          }
+        });
+
+      }
+
+    </script>
+
+  </body>
+
+</html>
